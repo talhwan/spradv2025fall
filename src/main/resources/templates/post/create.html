@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Create</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+    <!--wysiwyg 를 위한 코드 (quill)-->
+    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
+</head>
+<body>
+create <br/>
+userId : <input type="text" class="input_param" name="userId" id="input_userId" /> <br/>
+title : <input type="text" class="input_param" name="title" id="input_title" /> <br/>
+content : <!--<input type="text" class="input_param" name="content" id="input_content" /> <br/>-->
+
+<div id="div_content_editor"></div>
+<input type="hidden" class="input_param" id="div_content_editor_html" name="content"><br/>
+
+img : <input type="text" class="input_param" name="img" id="input_img" /> <br/>
+main img : <input type="file" id="input_file" onchange="upload_file()" accept="image/*" /> <br/>
+
+imgs :
+<div id="div_imgs"></div>
+<br/>
+for imgs : <input type="file" id="input_files" onchange="upload_files()" accept="image/*" /> <br/>
+
+<button onclick="create_post()">입력하기!</button>
+
+<script>
+
+    $(function(){
+        init_editor();
+    });
+    function init_editor(){
+        let tempId = "div_content_editor";
+        quilljsediterInit(tempId);
+    }
+    function quilljsediterInit(tempId){
+        var option = {
+            modules: {
+                toolbar: [
+                    [{header: [1,2,false] }],
+                    ['bold', 'italic', 'underline'],
+                    ['image', 'code-block'],
+                    [{ list: 'ordered' }, { list: 'bullet' }]
+                ]
+            },
+            placeholder: '자세한 내용을 입력해 주세요!',
+            theme: 'snow'
+        };
+
+        let quill = null;
+        quill = new Quill('#' + tempId, option);
+        quill.on('text-change', function() {
+            document.getElementById(tempId + "_html").value = quill.root.innerHTML;
+        });
+        quill.getModule('toolbar').addHandler('image', function () {
+            selectLocalImage(quill);
+        });
+    }
+    function selectLocalImage(obj_quill) {
+        const fileInput = document.createElement('input');
+        fileInput.setAttribute('type', 'file');
+        console.log("input.type " + fileInput.type);
+
+        fileInput.click();
+
+        fileInput.addEventListener("change", function () {  // change 이벤트로 input 값이 바뀌면 실행
+            uploadFile(fileInput, obj_quill);
+        });
+    }
+    function uploadFile(fileInput, obj_quill) {
+        // 파일 담기
+        let tempFile = null;
+        let inputFile = fileInput;
+        if (inputFile.files.length > 0) {
+            tempFile = inputFile.files[0];
+        }
+        let fileData = new FormData();
+        fileData.append("file", tempFile);
+
+        $.ajax({
+            url: "/api/default/upload",
+            type: "POST",
+            data: fileData ,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success: (data, status, xhr)=>{
+                let range = obj_quill.getSelection(); // 사용자가 선택한 에디터 범위
+                obj_quill.insertEmbed(range.index, 'image', "/image/" + data);
+            },
+            error: (data)=>{
+                alert("error")
+            },
+        });
+
+    }
+
+    function upload_files(){
+        let tempFile = null;
+        let inputFile = document.getElementById('input_files');
+        if (inputFile.files.length > 0) {
+            tempFile = inputFile.files[0];
+        }
+        let fileData = new FormData();
+        fileData.append("file", tempFile);
+
+        $.ajax({
+            url: "/api/default/upload",
+            type: "POST",
+            data: fileData ,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success: (data, status, xhr)=>{
+                //alert(data);
+                $("#div_imgs").append(
+                    '<input type="text" class="input_imgs" value="/image/'+data+'" />'
+                );
+            },
+            error: (data)=>{
+                alert("error")
+            },
+        });
+    }
+    function upload_file(){
+        let tempFile = null;
+        let inputFile = document.getElementById('input_file');
+        if (inputFile.files.length > 0) {
+            tempFile = inputFile.files[0];
+        }
+        let fileData = new FormData();
+        fileData.append("file", tempFile);
+
+        $.ajax({
+            url: "/api/default/upload",
+            type: "POST",
+            data: fileData ,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success: (data, status, xhr)=>{
+                //alert(data);
+                $("#input_img").val("/image/" + data);
+            },
+            error: (data)=>{
+                alert("error")
+            },
+        });
+    }
+
+    function create_post(){
+
+        let userId = localStorage.getItem("userId");
+        if(userId == null || userId === ""){
+            alert("로그인 먼저 해주세요!");
+            location.href = "/user/login";
+            return false;
+        }
+        $("#input_userId").val(userId);
+
+        let tempParam = {};
+        let input_param = $(".input_param");
+        for(let each of input_param){
+            tempParam[$(each).attr("name")] = $(each).val();
+        }
+        let input_imgs = $(".input_imgs");
+        let imgs = [];
+        for(let each of input_imgs){
+            imgs.push($(each).val());
+        }
+        tempParam["imgs"] = imgs;
+
+        $.ajax({
+            url: '/api/post',
+            method: 'POST',
+            contentType : 'application/json; charset=utf-8',
+            data : JSON.stringify(tempParam),
+            success: function (data, status, xhr) {
+                alert("data : : " + JSON.stringify(data));
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
