@@ -6,6 +6,7 @@ import com.thc.sprbasic2025summer.dto.DefaultDto;
 import com.thc.sprbasic2025summer.mapper.UserMapper;
 import com.thc.sprbasic2025summer.repository.UserRepository;
 import com.thc.sprbasic2025summer.service.UserService;
+import com.thc.sprbasic2025summer.util.TokenFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,22 @@ public class UserServiceImpl implements UserService {
     final UserMapper userMapper;
 
     @Override
+    public UserDto.TokenResDto login(UserDto.LoginReqDto param) {
+        Long id = null;
+        User user = userRepository.findByUsernameAndPassword(param.getUsername(), param.getPassword());
+        if(user == null){
+            throw new RuntimeException("no data");
+        }
+        id = user.getId();
+
+        TokenFactory tokenFactory = new TokenFactory();
+        String token = tokenFactory.generateToken(id);
+        Long userId = tokenFactory.validateToken(token);
+        System.out.println(userId);
+        return UserDto.TokenResDto.builder().token(token).build();
+    }
+    /*
+    @Override
     public UserDto.LoginResDto login(UserDto.LoginReqDto param) {
         Long id = null;
         User user = userRepository.findByUsernameAndPassword(param.getUsername(), param.getPassword());
@@ -28,6 +45,7 @@ public class UserServiceImpl implements UserService {
         }
         return UserDto.LoginResDto.builder().id(id).build();
     }
+    */
 
     /**/
 

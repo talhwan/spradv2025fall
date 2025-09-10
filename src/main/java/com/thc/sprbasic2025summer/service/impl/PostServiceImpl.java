@@ -8,6 +8,7 @@ import com.thc.sprbasic2025summer.mapper.PostMapper;
 import com.thc.sprbasic2025summer.repository.PostRepository;
 import com.thc.sprbasic2025summer.service.PostService;
 import com.thc.sprbasic2025summer.service.PostimgService;
+import com.thc.sprbasic2025summer.util.AES256Cipher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +90,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostDto.DetailResDto> scrollList(PostDto.ScrollListReqDto param) {
+
+        /*try{
+            String data = "112233";
+            String encodedData = AES256Cipher.AES_Encode(null, data);
+            System.out.println("data : " +  data );
+            System.out.println( encodedData );
+            String decodedData = AES256Cipher.AES_Decode(null, encodedData);
+            System.out.println("decodedData : " +  decodedData );
+        } catch (Exception e){
+
+        }*/
+
         param.init();
         return addList(postMapper.scrollList(param));
     }

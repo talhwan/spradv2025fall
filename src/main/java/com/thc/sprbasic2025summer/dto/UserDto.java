@@ -17,6 +17,11 @@ public class UserDto {
         Long id;
     }
 
+    @Setter @Getter @Builder
+    public static class TokenResDto {
+        String token;
+    }
+
     /**/
 
     @Setter @Getter @Builder

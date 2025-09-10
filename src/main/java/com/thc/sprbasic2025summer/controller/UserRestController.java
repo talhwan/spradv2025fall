@@ -18,9 +18,17 @@ public class UserRestController {
     final UserService userService;
 
     @PostMapping("/login")
+    public ResponseEntity<Void> login(@RequestBody UserDto.LoginReqDto param){
+        String data = userService.login(param).getToken();
+        System.out.println("data : " + data);
+        return ResponseEntity.ok().header("RefreshToken", data).build();
+    }
+    /*
+    @PostMapping("/login")
     public ResponseEntity<UserDto.LoginResDto> login(@RequestBody UserDto.LoginReqDto param){
         return ResponseEntity.ok(userService.login(param));
     }
+    */
 
     /**/
 

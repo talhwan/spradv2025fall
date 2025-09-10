@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Post List</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-</head>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script></head>
 <body>
 scroll list <br/>
 deleted : <input type="checkbox" id="input_deleted" onchange="listener_changed()"/>
@@ -37,9 +36,6 @@ orderway :
         if(input_cursor_id.length > 0){
             cursor = $(input_cursor_id[input_cursor_id.length - 1]).val();
         }
-
-
-
 
         $.ajax({
             url: '/api/post/scrollList',

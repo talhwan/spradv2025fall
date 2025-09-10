@@ -10,6 +10,7 @@ login <br/>
 username(ID) : <input type="text" class="input_param" name="username" id="input_username" /> <br/>
 password : <input type="password" class="input_param" name="password" id="input_password" /> <br/>
 <button onclick="login_user()">로그인하기</button>
+<button onclick="auth_user()">accessToken 발급하기</button>
 
 <script>
     function login_user(){
@@ -25,14 +26,35 @@ password : <input type="password" class="input_param" name="password" id="input_
             contentType : 'application/json; charset=utf-8',
             data : JSON.stringify(tempParam),
             success: function (data, status, xhr) {
-                //alert("data : " + JSON.stringify(data));
-                let userId = data["id"];
-                if(userId == null || userId === ""){
-                    alert("로그인 실패");
+                let refreshToken = xhr.getResponseHeader("RefreshToken");
+                //alert(refreshToken);
+
+                if(refreshToken == null || refreshToken === ""){
+                    alert("로그인 실패..");
                 } else {
-                    localStorage.setItem("userId", userId);
+                    localStorage.setItem("RefreshToken", refreshToken);
                     alert("로그인 성공!");
                 }
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+            }
+        });
+    }
+    function auth_user(){
+
+        $.ajax({
+            url: '/api/auth',
+            method: 'POST',
+            contentType : 'application/json; charset=utf-8',
+            beforeSend : function(xhr){
+                xhr.setRequestHeader("RefreshToken", localStorage.getItem("RefreshToken"));
+            },
+            data : JSON.stringify({}),
+            success: function (data, status, xhr) {
+                let accessToken = xhr.getResponseHeader("Authorization");
+                alert(accessToken);
             },
             error: function (data, status, err) {
             },

@@ -34,7 +34,8 @@ dependencies {
     /* file upload(local) */
     implementation group: 'commons-io', name: 'commons-io', version: '2.13.0'
 
-
+    // https://mvnrepository.com/artifact/org.apache.directory.studio/org.apache.commons.codec
+    implementation 'org.apache.directory.studio:org.apache.commons.codec:1.8'
 
     /* lombok */
     compileOnly 'org.projectlombok:lombok'
