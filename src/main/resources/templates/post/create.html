@@ -11,7 +11,7 @@
 </head>
 <body>
 create <br/>
-userId : <input type="text" class="input_param" name="userId" id="input_userId" /> <br/>
+<!--userId : <input type="text" class="input_param" name="userId" id="input_userId" /> <br/>-->
 title : <input type="text" class="input_param" name="title" id="input_title" /> <br/>
 content : <!--<input type="text" class="input_param" name="content" id="input_content" /> <br/>-->
 
@@ -154,13 +154,13 @@ for imgs : <input type="file" id="input_files" onchange="upload_files()" accept=
 
     function create_post(){
 
-        let userId = localStorage.getItem("userId");
+        /*let userId = localStorage.getItem("userId");
         if(userId == null || userId === ""){
             alert("로그인 먼저 해주세요!");
             location.href = "/user/login";
             return false;
         }
-        $("#input_userId").val(userId);
+        $("#input_userId").val(userId);*/
 
         let tempParam = {};
         let input_param = $(".input_param");
@@ -177,6 +177,9 @@ for imgs : <input type="file" id="input_files" onchange="upload_files()" accept=
         $.ajax({
             url: '/api/post',
             method: 'POST',
+            beforeSend : function(xhr){
+                xhr.setRequestHeader("Authorization", localStorage.getItem("Authorization"));
+            },
             contentType : 'application/json; charset=utf-8',
             data : JSON.stringify(tempParam),
             success: function (data, status, xhr) {

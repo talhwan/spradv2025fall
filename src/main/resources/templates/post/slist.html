@@ -40,6 +40,9 @@ orderway :
         $.ajax({
             url: '/api/post/scrollList',
             method: 'GET',
+            beforeSend : function(xhr){
+                xhr.setRequestHeader("Authorization", localStorage.getItem("Authorization"));
+            },
             data : {
                 deleted : $("#input_deleted").prop("checked")
                 , cursor : cursor

@@ -27,7 +27,7 @@ password : <input type="password" class="input_param" name="password" id="input_
             data : JSON.stringify(tempParam),
             success: function (data, status, xhr) {
                 let refreshToken = xhr.getResponseHeader("RefreshToken");
-                //alert(refreshToken);
+                alert(refreshToken);
 
                 if(refreshToken == null || refreshToken === ""){
                     alert("로그인 실패..");
@@ -55,6 +55,7 @@ password : <input type="password" class="input_param" name="password" id="input_
             success: function (data, status, xhr) {
                 let accessToken = xhr.getResponseHeader("Authorization");
                 alert(accessToken);
+                localStorage.setItem("Authorization", accessToken);
             },
             error: function (data, status, err) {
             },

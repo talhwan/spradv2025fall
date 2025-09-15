@@ -1,16 +1,55 @@
 package com.thc.sprbasic2025summer.util;
 
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
+import com.thc.sprbasic2025summer.domain.RefreshToken;
+import com.thc.sprbasic2025summer.repository.RefreshTokenRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+@RequiredArgsConstructor
+@Component
 public class TokenFactory {
 
-    public int dueTerm = 10;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public String generateToken(Long userId) {
+    public int refreshTokenTerm = 60 * 6;
+    public int accessTokenTerm = 30;
+
+    public void revokeRefreshToken(Long userId) {
+        List<RefreshToken> list = refreshTokenRepository.findByUserId(userId);
+        if(list != null && !list.isEmpty()){
+            refreshTokenRepository.deleteAll(list);
+        }
+    }
+    public String createRefreshToken(Long userId) {
+        revokeRefreshToken(userId);
+        return generateToken(userId, refreshTokenTerm);
+    }
+    public String createAccessToken(Long userId) {
+        return generateToken(userId, accessTokenTerm);
+    }
+    public Long validateRefreshToken(String token){
+
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token);
+        if(refreshToken == null){
+            return null;
+        } else {
+            Long tempUserId = refreshToken.getUserId();
+            Long tokenUserId = validateToken(token);
+            if(tempUserId.equals(tokenUserId)){
+                return tokenUserId;
+            } else {
+                return null;
+            }
+        }
+    }
+    public Long validateAccessToken(String token){
+        return validateToken(token);
+    }
+
+    public String generateToken(Long userId, int term) {
 
         String due = null;
         Date date = new Date();
@@ -18,7 +57,7 @@ public class TokenFactory {
         // Java 시간 더하기
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        cal.add(Calendar.MINUTE, dueTerm);
+        cal.add(Calendar.MINUTE, term);
 
         due = sdformat.format(cal.getTime());
         System.out.println("만료일시 : " + due);

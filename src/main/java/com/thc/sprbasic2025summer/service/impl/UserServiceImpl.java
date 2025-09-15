@@ -1,9 +1,11 @@
 package com.thc.sprbasic2025summer.service.impl;
 
+import com.thc.sprbasic2025summer.domain.RefreshToken;
 import com.thc.sprbasic2025summer.domain.User;
 import com.thc.sprbasic2025summer.dto.UserDto;
 import com.thc.sprbasic2025summer.dto.DefaultDto;
 import com.thc.sprbasic2025summer.mapper.UserMapper;
+import com.thc.sprbasic2025summer.repository.RefreshTokenRepository;
 import com.thc.sprbasic2025summer.repository.UserRepository;
 import com.thc.sprbasic2025summer.service.UserService;
 import com.thc.sprbasic2025summer.util.TokenFactory;
@@ -19,6 +21,8 @@ public class UserServiceImpl implements UserService {
 
     final UserRepository userRepository;
     final UserMapper userMapper;
+    final RefreshTokenRepository refreshTokenRepository;
+    final TokenFactory tokenFactory;
 
     @Override
     public UserDto.TokenResDto login(UserDto.LoginReqDto param) {
@@ -29,10 +33,13 @@ public class UserServiceImpl implements UserService {
         }
         id = user.getId();
 
-        TokenFactory tokenFactory = new TokenFactory();
-        String token = tokenFactory.generateToken(id);
-        Long userId = tokenFactory.validateToken(token);
-        System.out.println(userId);
+        String token = tokenFactory.createRefreshToken(id);
+        //Long userId = tokenFactory.validateToken(token);
+        //System.out.println(userId);
+        //디비에 저장!
+        RefreshToken refreshToken = RefreshToken.of(id, token);
+        refreshTokenRepository.save(refreshToken);
+
         return UserDto.TokenResDto.builder().token(token).build();
     }
     /*
