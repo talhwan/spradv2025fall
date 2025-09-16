@@ -1,15 +1,20 @@
 package com.thc.sprbasic2025summer.service.impl;
 
 import com.thc.sprbasic2025summer.domain.RefreshToken;
+import com.thc.sprbasic2025summer.domain.RoleType;
 import com.thc.sprbasic2025summer.domain.User;
+import com.thc.sprbasic2025summer.domain.UserRoleType;
 import com.thc.sprbasic2025summer.dto.UserDto;
 import com.thc.sprbasic2025summer.dto.DefaultDto;
 import com.thc.sprbasic2025summer.mapper.UserMapper;
 import com.thc.sprbasic2025summer.repository.RefreshTokenRepository;
+import com.thc.sprbasic2025summer.repository.RoleTypeRepository;
 import com.thc.sprbasic2025summer.repository.UserRepository;
+import com.thc.sprbasic2025summer.repository.UserRoleTypeRepository;
 import com.thc.sprbasic2025summer.service.UserService;
 import com.thc.sprbasic2025summer.util.TokenFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +28,9 @@ public class UserServiceImpl implements UserService {
     final UserMapper userMapper;
     final RefreshTokenRepository refreshTokenRepository;
     final TokenFactory tokenFactory;
+    final BCryptPasswordEncoder bCryptPasswordEncoder;
+    final RoleTypeRepository roleTypeRepository;
+    final UserRoleTypeRepository userRoleTypeRepository;
 
     @Override
     public UserDto.TokenResDto login(UserDto.LoginReqDto param) {
@@ -64,14 +72,29 @@ public class UserServiceImpl implements UserService {
         if(user != null){
             throw new RuntimeException("already exist");
         }
-        return userRepository.save(param.toEntity()).toCreateResDto();
+        //시큐리티용 패쓰워드 사용!
+        param.setPassword(bCryptPasswordEncoder.encode(param.getPassword()));
+
+        User newUser = userRepository.save(param.toEntity());
+        DefaultDto.CreateResDto res = newUser.toCreateResDto();
+
+        RoleType roleType = roleTypeRepository.findByTypeName("ROLE_USER");
+        if(roleType == null){
+            roleType = roleTypeRepository.save(RoleType.of("user", "ROLE_USER"));
+        }
+
+        userRoleTypeRepository.save(UserRoleType.of(newUser, roleType));
+
+        return res;
     }
 
     @Override
     public void update(UserDto.UpdateReqDto param) {
         User user = userRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException("no data"));
         if(param.getDeleted() != null){ user.setDeleted(param.getDeleted()); }
-        if(param.getPassword() != null){ user.setPassword(param.getPassword()); }
+        if(param.getPassword() != null){
+            user.setPassword(bCryptPasswordEncoder.encode(param.getPassword()));
+        }
         if(param.getName() != null){ user.setName(param.getName()); }
         if(param.getPhone() != null){ user.setPhone(param.getPhone()); }
         userRepository.save(user);

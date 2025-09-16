@@ -32,7 +32,7 @@ public class TokenFactory {
     }
     public Long validateRefreshToken(String token){
 
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(token);
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token).orElse(null);
         if(refreshToken == null){
             return null;
         } else {
