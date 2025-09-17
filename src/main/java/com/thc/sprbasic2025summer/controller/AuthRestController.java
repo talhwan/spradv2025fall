@@ -2,6 +2,9 @@ package com.thc.sprbasic2025summer.controller;
 
 import com.thc.sprbasic2025summer.dto.DefaultDto;
 import com.thc.sprbasic2025summer.dto.PostDto;
+import com.thc.sprbasic2025summer.exception.InvalidTokenException;
+import com.thc.sprbasic2025summer.security.AuthService;
+import com.thc.sprbasic2025summer.security.ExternalProperties;
 import com.thc.sprbasic2025summer.util.TokenFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +22,24 @@ import java.util.Date;
 @RestController
 public class AuthRestController {
 
-    String token_prefix = "Bearer ";
+    //String token_prefix = "Bearer ";
+    //final TokenFactory tokenFactory;
 
-    final TokenFactory tokenFactory;
+    final AuthService authService;
+    final ExternalProperties externalProperties;
 
+    @PostMapping("")
+    public ResponseEntity<Void> access(HttpServletRequest request) {
+        String refreshToken = request.getHeader(externalProperties.getRefreshKey());
+        String prefix = externalProperties.getTokenPrefix();
+        if(refreshToken == null || refreshToken.isEmpty() || !refreshToken.startsWith(prefix)) {
+            throw new InvalidTokenException("Refresh Token Not Found");
+        }
+        refreshToken = refreshToken.substring(prefix.length());
+        String accessToken = authService.issueAccessToken(refreshToken);
+        return ResponseEntity.ok().header(externalProperties.getAccessKey(), prefix + accessToken).build();
+    }
+    /*
     @PostMapping("")
     public ResponseEntity<Void> access(HttpServletRequest request) {
         String refreshToken = request.getHeader("RefreshToken");
@@ -43,4 +60,5 @@ public class AuthRestController {
         String token = tokenFactory.createAccessToken(userId);
         return ResponseEntity.ok().header("Authorization", token_prefix + token).build();
     }
+    */
 }

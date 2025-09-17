@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
     final RoleTypeRepository roleTypeRepository;
     final UserRoleTypeRepository userRoleTypeRepository;
 
+    /*
     @Override
     public UserDto.TokenResDto login(UserDto.LoginReqDto param) {
         Long id = null;
@@ -50,6 +51,7 @@ public class UserServiceImpl implements UserService {
 
         return UserDto.TokenResDto.builder().token(token).build();
     }
+    */
     /*
     @Override
     public UserDto.LoginResDto login(UserDto.LoginReqDto param) {

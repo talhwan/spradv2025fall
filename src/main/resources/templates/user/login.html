@@ -21,14 +21,14 @@ password : <input type="password" class="input_param" name="password" id="input_
             tempParam[$(each).attr("name")] = $(each).val();
         }
         $.ajax({
-            url: '/api/user/login',
+            url: '/api/login',
+            //url: '/api/user/login',
             method: 'POST',
             contentType : 'application/json; charset=utf-8',
             data : JSON.stringify(tempParam),
             success: function (data, status, xhr) {
                 let refreshToken = xhr.getResponseHeader("RefreshToken");
-                alert(refreshToken);
-
+                //alert(refreshToken);
                 if(refreshToken == null || refreshToken === ""){
                     alert("로그인 실패..");
                 } else {

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public interface UserService {
-    UserDto.TokenResDto login(UserDto.LoginReqDto param);
+    //UserDto.TokenResDto login(UserDto.LoginReqDto param);
     //UserDto.LoginResDto login(UserDto.LoginReqDto param);
     /**/
     DefaultDto.CreateResDto create(UserDto.CreateReqDto param);

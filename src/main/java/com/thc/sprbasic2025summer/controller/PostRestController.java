@@ -2,11 +2,14 @@ package com.thc.sprbasic2025summer.controller;
 
 import com.thc.sprbasic2025summer.dto.DefaultDto;
 import com.thc.sprbasic2025summer.dto.PostDto;
+import com.thc.sprbasic2025summer.security.PrincipalDetails;
 import com.thc.sprbasic2025summer.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -54,9 +57,12 @@ public class PostRestController {
     public ResponseEntity<DefaultDto.PagedListResDto> pagedList(PostDto.PagedListReqDto param){
         return ResponseEntity.ok(postService.pagedList(param));
     }
+    //@PreAuthorize("hasRole('USER')")
+    @PreAuthorize("permitAll()")
     @GetMapping("/scrollList")
-    public ResponseEntity<List<PostDto.DetailResDto>> scrollList(PostDto.ScrollListReqDto param, HttpServletRequest request){
-        System.out.println("reqUserId = " + request.getAttribute("reqUserId"));
+    public ResponseEntity<List<PostDto.DetailResDto>> scrollList(PostDto.ScrollListReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        System.out.println("userId : " + principalDetails.getUser().getId());
+        //System.out.println("reqUserId = " + request.getAttribute("reqUserId"));
         return ResponseEntity.ok(postService.scrollList(param));
     }
 
