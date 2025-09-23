@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thc.sprbasic2025summer.mapper.PermissionMapper">
+
+	<!---->
+	<select id="detail" parameterType="hashMap" resultType="com.thc.sprbasic2025summer.dto.PermissionDto$DetailResDto">
+		SELECT permission.id
+			, permission.deleted
+		 	, permission.created_at as createdAt
+		 	, permission.modified_at as modifiedAt
+
+			, permission.title
+			, permission.content
+		FROM permission
+		WHERE permission.id = #{id}
+	</select>
+
+	<sql id="commonWhere">
+		WHERE permission.id is not NULL
+		<if test = "deleted != null">AND permission.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND permission.title LIKE CONCAT('%', #{title}, '%')</if>
+	</sql>
+
+	<select id="list" parameterType="hashMap" resultType="com.thc.sprbasic2025summer.dto.PermissionDto$DetailResDto">
+		SELECT permission.id
+		FROM permission
+		<include refid="commonWhere"/>
+	</select>
+
+
+	<select id="pagedList" parameterType="hashMap" resultType="com.thc.sprbasic2025summer.dto.PermissionDto$DetailResDto">
+		SELECT permission.id
+		FROM permission
+		<include refid="commonWhere"/>
+		ORDER BY
+		<if test = "orderby != null and orderby =='id'">permission.id</if>
+		<if test = "orderby != null and orderby =='title'">permission.title</if>
+		<if test = "orderway != null and orderway =='desc'"> DESC</if>
+		<if test = "orderway != null and orderway =='asc'"> ASC</if>
+		LIMIT #{offset}, #{perpage}
+	</select>
+	<select id="pagedListCount" parameterType="hashMap" resultType="Integer">
+		SELECT count(permission.id) as listsize
+		FROM permission
+		<include refid="commonWhere"/>
+	</select>
+
+	<select id="scrollList" parameterType="hashMap" resultType="com.thc.sprbasic2025summer.dto.PermissionDto$DetailResDto">
+		SELECT permission.id
+		FROM permission
+		<include refid="commonWhere"/>
+
+		<if test = "orderway != null and orderway =='desc'">
+			<if test = "cursor != null and cursor !=''">AND #{cursor} > permission.id </if>
+			ORDER BY permission.id DESC
+		</if>
+		<if test = "orderway != null and orderway =='asc'">
+			<if test = "cursor != null and cursor !=''">AND permission.id > #{cursor}</if>
+			ORDER BY permission.id ASC
+		</if>
+		LIMIT 0, #{perpage}
+	</select>
+</mapper>

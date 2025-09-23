@@ -30,17 +30,6 @@ public class User extends AuditingField{
         return new User(username, password, name, phone);
     }
 
-    //fetch 타입 바꾸고, toString 순환 참조 수정
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    private List<UserRoleType> userRoleType = new ArrayList<>();
-    //권한 관련한 기능 추가
-    public List<UserRoleType> getRoleList(){
-        if(!this.userRoleType.isEmpty()){
-            return userRoleType;
-        }
-        return new ArrayList<>();
-    }
-
     public DefaultDto.CreateResDto toCreateResDto() {
         return DefaultDto.CreateResDto.builder().id(getId()).build();
     }

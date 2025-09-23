@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/scsprbasic2025summer
+    url: jdbc:mysql://localhost:3306/scspradv2025fall
     username: root
     password: abcd1234
     driver-class-name: com.mysql.cj.jdbc.Driver
