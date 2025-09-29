@@ -8,7 +8,20 @@ import java.util.List;
 
 public class PermissionDto {
 
+    @Setter @Getter @Builder
+    public static class ExistReqDto {
+        Long userId;
+        String target;
+        Integer func;
+    }
+
     /**/
+
+    public static String[][] targets = {
+            {"permission", "권한"}
+            ,{"user", "사용자"}
+            ,{"notice", "공지사항"}
+    };
 
     @Setter @Getter @Builder
     public static class CreateReqDto {
@@ -30,6 +43,9 @@ public class PermissionDto {
     public static class DetailResDto extends DefaultDto.DetailResDto {
         String title;
         String content;
+
+        String[][] targets;
+        List<PermissiondetailDto.DetailResDto> details;
     }
 
     @Setter @Getter @SuperBuilder @NoArgsConstructor @AllArgsConstructor

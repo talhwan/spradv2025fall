@@ -9,6 +9,7 @@ import java.util.List;
 @Service
 public interface PermissiondetailService {
     /**/
+    DefaultDto.CreateResDto toggle(PermissiondetailDto.ToggleReqDto param);
     DefaultDto.CreateResDto create(PermissiondetailDto.CreateReqDto param);
     void update(PermissiondetailDto.UpdateReqDto param);
     void delete(PermissiondetailDto.UpdateReqDto param);

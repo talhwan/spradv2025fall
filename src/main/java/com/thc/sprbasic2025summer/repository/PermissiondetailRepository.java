@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PermissiondetailRepository extends JpaRepository<Permissiondetail, Long> {
+    Permissiondetail findByPermissionIdAndTargetAndFunc(Long permissionId, String target, Integer func);
 }

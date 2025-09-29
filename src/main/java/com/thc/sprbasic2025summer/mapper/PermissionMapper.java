@@ -6,6 +6,7 @@ import com.thc.sprbasic2025summer.dto.PermissionDto;
 import java.util.List;
 
 public interface PermissionMapper {
+    int exist(PermissionDto.ExistReqDto param);
     /**/
     PermissionDto.DetailResDto detail(DefaultDto.DetailReqDto param);
     List<PermissionDto.DetailResDto> list(PermissionDto.ListReqDto param);

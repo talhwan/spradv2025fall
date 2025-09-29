@@ -30,37 +30,37 @@ public class PermissionRestController {
     @PostMapping("")
     public ResponseEntity<DefaultDto.CreateResDto> create(@RequestBody PermissionDto.CreateReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long reqUserId = getReqUserId(principalDetails);
-        return ResponseEntity.ok(permissionService.create(param));
+        return ResponseEntity.ok(permissionService.create(param, getReqUserId(principalDetails)));
     }
     @PutMapping("")
-    public ResponseEntity<Void> update(@RequestBody PermissionDto.UpdateReqDto param){
-        permissionService.update(param);
+    public ResponseEntity<Void> update(@RequestBody PermissionDto.UpdateReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        permissionService.update(param, getReqUserId(principalDetails));
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     @DeleteMapping("")
-    public ResponseEntity<Void> delete(@RequestBody PermissionDto.UpdateReqDto param){
-        permissionService.delete(param);
+    public ResponseEntity<Void> delete(@RequestBody PermissionDto.UpdateReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        permissionService.delete(param, getReqUserId(principalDetails));
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("")
-    public ResponseEntity<PermissionDto.DetailResDto> detail(DefaultDto.DetailReqDto param){
-        return ResponseEntity.ok(permissionService.detail(param));
+    public ResponseEntity<PermissionDto.DetailResDto> detail(DefaultDto.DetailReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        return ResponseEntity.ok(permissionService.detail(param, getReqUserId(principalDetails)));
     }
     @GetMapping("/list")
-    public ResponseEntity<List<PermissionDto.DetailResDto>> list(PermissionDto.ListReqDto param){
-        return ResponseEntity.ok(permissionService.list(param));
+    public ResponseEntity<List<PermissionDto.DetailResDto>> list(PermissionDto.ListReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        return ResponseEntity.ok(permissionService.list(param, getReqUserId(principalDetails)));
     }
     @GetMapping("/pagedList")
-    public ResponseEntity<DefaultDto.PagedListResDto> pagedList(PermissionDto.PagedListReqDto param){
-        return ResponseEntity.ok(permissionService.pagedList(param));
+    public ResponseEntity<DefaultDto.PagedListResDto> pagedList(PermissionDto.PagedListReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        return ResponseEntity.ok(permissionService.pagedList(param, getReqUserId(principalDetails)));
     }
     //@PreAuthorize("hasRole('USER')")
     @PreAuthorize("permitAll()")
     @GetMapping("/scrollList")
     public ResponseEntity<List<PermissionDto.DetailResDto>> scrollList(PermissionDto.ScrollListReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
         System.out.println("userId : " + getReqUserId(principalDetails));
-        return ResponseEntity.ok(permissionService.scrollList(param));
+        return ResponseEntity.ok(permissionService.scrollList(param, getReqUserId(principalDetails)));
     }
 
 }

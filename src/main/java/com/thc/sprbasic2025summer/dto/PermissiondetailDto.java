@@ -9,6 +9,13 @@ public class PermissiondetailDto {
     /**/
 
     @Setter @Getter @Builder
+    public static class ToggleReqDto {
+        Long permissionId;
+        Boolean alive;
+        String target;
+        Integer func;
+    }
+    @Setter @Getter @Builder
     public static class CreateReqDto {
         Long permissionId;
         String target;
@@ -36,13 +43,19 @@ public class PermissiondetailDto {
     @Setter @Getter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class ListReqDto extends DefaultDto.ListReqDto {
         Long permissionId;
+        String target;
+        Integer func;
     }
     @Setter @Getter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class PagedListReqDto extends DefaultDto.PagedListReqDto {
         Long permissionId;
+        String target;
+        Integer func;
     }
     @Setter @Getter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class ScrollListReqDto extends DefaultDto.ScrollListReqDto {
         Long permissionId;
+        String target;
+        Integer func;
     }
 }

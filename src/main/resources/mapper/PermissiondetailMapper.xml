@@ -19,7 +19,6 @@
 	<sql id="commonWhere">
 		WHERE permissiondetail.id is not NULL
 		<if test = "deleted != null">AND permissiondetail.deleted = #{deleted}</if>
-		<if test = "title != null and title !=''">AND permissiondetail.title LIKE CONCAT('%', #{title}, '%')</if>
 		<if test = "permissionId != null and permissionId !=''">AND permissiondetail.permission_id = #{permissionId}</if>
 		<if test = "target != null and target !=''">AND permissiondetail.target = #{target}</if>
 		<if test = "func != null and func !=''">AND permissiondetail.func = #{func}</if>

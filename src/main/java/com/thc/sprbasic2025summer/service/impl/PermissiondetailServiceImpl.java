@@ -19,6 +19,24 @@ public class PermissiondetailServiceImpl implements PermissiondetailService {
     final PermissiondetailRepository permissiondetailRepository;
     final PermissiondetailMapper permissiondetailMapper;
 
+
+    @Override
+    public DefaultDto.CreateResDto toggle(PermissiondetailDto.ToggleReqDto param) {
+        Permissiondetail permissiondetail = permissiondetailRepository.findByPermissionIdAndTargetAndFunc(param.getPermissionId(), param.getTarget(), param.getFunc());
+
+        Boolean alive = param.getAlive();
+        if(permissiondetail == null){
+            if(alive){
+                return create(PermissiondetailDto.CreateReqDto.builder().permissionId(param.getPermissionId()).target(param.getTarget()).func(param.getFunc()).build());
+            }
+        } else {
+            permissiondetail.setDeleted(!alive);
+            permissiondetailRepository.save(permissiondetail);
+        }
+
+        return DefaultDto.CreateResDto.builder().id((long) 0).build();
+    }
+
     /**/
 
     @Override

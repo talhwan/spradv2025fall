@@ -3,12 +3,27 @@ package com.thc.sprbasic2025summer.domain;
 import com.thc.sprbasic2025summer.dto.DefaultDto;
 import com.thc.sprbasic2025summer.dto.PermissiondetailDto;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
 @Entity
+@Table(
+        indexes = {
+                @Index(columnList = "deleted")
+                ,@Index(columnList = "permissionId")
+                ,@Index(columnList = "target")
+                ,@Index(columnList = "func")
+        }
+        ,uniqueConstraints = {@UniqueConstraint(
+        name = "UQ_permissiondetail_permissionId_target_func"
+        ,columnNames = {"permissionId", "target", "func"}
+)}
+)
 public class Permissiondetail extends AuditingField{
     Long permissionId;
     String target; //어떤 테이블에 대한 권한인지 ex) user, notice

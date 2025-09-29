@@ -9,11 +9,11 @@ import java.util.List;
 @Service
 public interface PermissionService {
     /**/
-    DefaultDto.CreateResDto create(PermissionDto.CreateReqDto param);
-    void update(PermissionDto.UpdateReqDto param);
-    void delete(PermissionDto.UpdateReqDto param);
-    PermissionDto.DetailResDto detail(DefaultDto.DetailReqDto param);
-    List<PermissionDto.DetailResDto> list(PermissionDto.ListReqDto param);
-    DefaultDto.PagedListResDto pagedList(PermissionDto.PagedListReqDto param);
-    List<PermissionDto.DetailResDto> scrollList(PermissionDto.ScrollListReqDto param);
+    DefaultDto.CreateResDto create(PermissionDto.CreateReqDto param, Long reqUserId);
+    void update(PermissionDto.UpdateReqDto param, Long reqUserId);
+    void delete(PermissionDto.UpdateReqDto param, Long reqUserId);
+    PermissionDto.DetailResDto detail(DefaultDto.DetailReqDto param, Long reqUserId);
+    List<PermissionDto.DetailResDto> list(PermissionDto.ListReqDto param, Long reqUserId);
+    DefaultDto.PagedListResDto pagedList(PermissionDto.PagedListReqDto param, Long reqUserId);
+    List<PermissionDto.DetailResDto> scrollList(PermissionDto.ScrollListReqDto param, Long reqUserId);
 }

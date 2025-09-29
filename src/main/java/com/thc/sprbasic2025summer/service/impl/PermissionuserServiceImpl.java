@@ -1,10 +1,12 @@
 package com.thc.sprbasic2025summer.service.impl;
 
 import com.thc.sprbasic2025summer.domain.Permissionuser;
+import com.thc.sprbasic2025summer.domain.User;
 import com.thc.sprbasic2025summer.dto.DefaultDto;
 import com.thc.sprbasic2025summer.dto.PermissionuserDto;
 import com.thc.sprbasic2025summer.mapper.PermissionuserMapper;
 import com.thc.sprbasic2025summer.repository.PermissionuserRepository;
+import com.thc.sprbasic2025summer.repository.UserRepository;
 import com.thc.sprbasic2025summer.service.PermissionuserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,25 @@ public class PermissionuserServiceImpl implements PermissionuserService {
 
     final PermissionuserRepository permissionuserRepository;
     final PermissionuserMapper permissionuserMapper;
+    final UserRepository userRepository;
 
     /**/
 
     @Override
     public DefaultDto.CreateResDto create(PermissionuserDto.CreateReqDto param) {
+        if(param.getUserId() == null) {
+            if(param.getUsername() == null) {
+                throw new RuntimeException("not enough params");
+            } else {
+                User user = userRepository.findByUsername(param.getUsername());
+                if(user == null) {
+                    throw new RuntimeException("user not found");
+                } else {
+                    param.setUserId(user.getId());
+                }
+            }
+        }
+
         Permissionuser permissionuser = permissionuserRepository.save(param.toEntity());
         return permissionuser.toCreateResDto();
     }
@@ -70,18 +86,6 @@ public class PermissionuserServiceImpl implements PermissionuserService {
 
     @Override
     public List<PermissionuserDto.DetailResDto> scrollList(PermissionuserDto.ScrollListReqDto param) {
-
-        /*try{
-            String data = "112233";
-            String encodedData = AES256Cipher.AES_Encode(null, data);
-            System.out.println("data : " +  data );
-            System.out.println( encodedData );
-            String decodedData = AES256Cipher.AES_Decode(null, encodedData);
-            System.out.println("decodedData : " +  decodedData );
-        } catch (Exception e){
-
-        }*/
-
         param.init();
         return addList(permissionuserMapper.scrollList(param));
     }

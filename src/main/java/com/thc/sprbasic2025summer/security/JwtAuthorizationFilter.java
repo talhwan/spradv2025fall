@@ -56,7 +56,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		System.out.println("userId : " + userId);
 
 		// 유저 조회, 없을 시 return NoMatchingDataException(404)
-		User userEntity = userRepository.findEntityGraphRoleTypeById(userId).orElseThrow(new Supplier<NoMatchingDataException>() {
+		User userEntity = userRepository.findById(userId).orElseThrow(new Supplier<NoMatchingDataException>() {
 			@Override
 			public NoMatchingDataException get() {
 				return new NoMatchingDataException("id : " + userId);
